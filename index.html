@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="naver-site-verification" content="6651b4e5581d97d0d51678ecf5ced957a5e5dc74" />
+<title>빚갚자 — 대출 여러 개, 뭐부터 갚아야 이자를 아낄까? | 상환 순서 계산기</title>
+<meta name="description" content="대출이 여러 개일 때 뭐부터 갚아야 할까? 잔액·금리·상환방식만 넣으면 매달 상환 스케줄과 아발란치·스노볼 전략별 총이자·완제 시점을 비교해 드립니다. 무료, 회원가입 없음.">
+<link rel="canonical" href="https://bitgapja.com/">
+<meta property="og:title" content="빚갚자 — 대출 상환 순서 계산기">
+<meta property="og:description" content="대출 여러 개, 뭐부터 갚을까? 매달 얼마씩 어떻게 줄어드는지 30초 만에 계산해보세요.">
+<meta property="og:url" content="https://bitgapja.com/">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
+<script src="/engine.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "빚갚자 대출 상환 순서 계산기",
+  "url": "https://bitgapja.com/",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "description": "여러 개의 대출을 입력하면 매달 상환 스케줄과 아발란치·스노볼 전략별 총이자·완제 시점을 비교해 상환 순서를 알려주는 무료 계산기"
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1268379198359906"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div id="landing">
+
+  <header class="lp-header">
+    <div class="lp-hd">
+      <a class="lp-logo" href="/">
+        <span>빚갚자<span class="dot">.</span></span>
+        <span class="lp-logo-sub">대출·상환·정책자금 가이드</span>
+      </a>
+      <nav class="lp-nav">
+        <a href="/guides/">상환 가이드</a>
+        <a href="/about.html">소개</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero: Calculator First — 최소 높이 -->
+  <section class="lp-hero lp-wrap">
+    <div class="lp-hero-inner">
+      <div class="lp-eyebrow">부채 계산 도구</div>
+      <h1 class="lp-h1">여러 대출의 상환 순서를 비교하세요.</h1>
+      <p class="lp-sub">잔액·금리·상환 조건을 입력하면 방식별 예상 상환기간과 총이자를 계산합니다.</p>
+      <div class="lp-feats">
+        <span class="lp-feat">두 방식 이자 비교</span>
+        <span class="lp-feat">월별 상환 스케줄</span>
+        <span class="lp-feat">추가 상환 시나리오</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calculator: 첫 화면의 주인공 -->
+  <main class="lp-calc lp-wrap">
+
+    <div class="lp-sec">
+      <div class="lp-sec-title">내 대출</div>
+      <div class="lp-sec-desc">잔액·금리·기간을 입력하세요. 개수 제한 없이 추가할 수 있습니다.</div>
+      <div id="loans"></div>
+      <button type="button" class="lp-add" onclick="addLoan()">+ 대출 추가</button>
+    </div>
+
+    <div class="lp-sec">
+      <div class="lp-sec-title">추가 상환 계획 <span style="font-weight:500;color:var(--muted)">(선택)</span></div>
+      <div class="lp-sec-desc">입력하지 않으면 0으로 계산합니다.</div>
+      <div class="lp-plan">
+        <div class="lp-plan-row">
+          <label class="lp-plan-label" for="extra">매달 추가 상환금</label>
+          <div class="lp-plan-hint">정기 상환금 위에 매달 얹을 금액입니다.</div>
+          <div class="field" style="margin-bottom:0">
+            <div class="won" data-unit="만원"><input type="text" id="extra" inputmode="numeric" placeholder="0" value=""></div>
+          </div>
+        </div>
+        <hr class="lp-plan-divider">
+        <div class="lp-plan-row">
+          <button type="button" class="lp-lump-head" id="lumpToggle" aria-expanded="false">
+            <span>
+              <span class="lp-plan-label" style="margin-bottom:0">일회성 목돈 투입</span>
+              <span class="lp-lump-summary" id="lumpSummary" style="display:none"></span>
+            </span>
+            <span class="lp-lump-arrow" id="lumpArrow">열기 ▾</span>
+          </button>
+          <div id="lumpBody" style="display:none">
+            <div class="lp-plan-hint" style="margin-top:8px">성과급·환급금 등 첫 달에 한 번 투입할 금액입니다.</div>
+            <label class="lp-lump-check" style="margin-bottom:8px"><input type="checkbox" id="lumpOn"> 계산에 반영</label>
+            <div class="field" id="lumpField" style="margin-bottom:0; display:block">
+              <div class="won" data-unit="만원"><input type="text" id="lump" inputmode="numeric" placeholder="0" value=""></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="lp-go" onclick="calc()">갚는 순서 계산하기</button>
+      <div class="lp-trust"><b>무료</b> · 회원가입 없음 · 입력값은 저장되지 않습니다</div>
+      <div class="err" id="err"></div>
+    </div>
+
+  </main>
+
+  <section id="result">
+
+    <!-- 1. Hero Summary -->
+    <section class="rsec no-band fade-in">
+      <div class="hero-summary">
+        <div class="eyebrow">계산 결과</div>
+        <div class="sub-eyebrow">현재 입력한 조건을 기준으로 계산했습니다.</div>
+        <div class="facts-row" id="factsRow"></div>
+        <div class="hero-lines" id="heroLines"></div>
+      </div>
+    </section>
+
+    <!-- 캡처 대상 시작 -->
+    <div id="captureArea">
+      <div class="cap-brand">빚갚자 · bitgapja.com</div>
+      <div class="cap-summary" id="capSummary"></div>
+
+      <!-- 2. KPI 3개 -->
+      <section class="rsec fade-in">
+        <h2>핵심 지표</h2>
+        <div class="kpis">
+          <div class="kpi">
+            <div class="label">예상 완납일</div>
+            <div class="value" id="kpiDate">—</div>
+            <div class="sub" id="kpiDateSub"></div>
+          </div>
+          <div class="kpi">
+            <div class="label">총 상환기간</div>
+            <div class="value" id="kpiPeriod">—</div>
+            <div class="sub" id="kpiPeriodSub"></div>
+          </div>
+          <div class="kpi">
+            <div class="label">예상 총이자</div>
+            <div class="value" id="kpiInterest">—</div>
+            <div class="sub" id="kpiInterestSub"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 두 방식 비교 -->
+      <section class="rsec fade-in">
+        <h2>두 방식 비교</h2>
+        <div class="compare">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>아발란치 <small style="color:var(--muted);font-weight:500">(금리 높은 순)</small></th>
+                <th>스노우볼 <small style="color:var(--muted);font-weight:500">(잔액 적은 순)</small></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>총 상환기간</td><td><b id="cmpAMon"></b></td><td><b id="cmpSMon"></b></td></tr>
+              <tr><td>예상 총이자</td><td><b id="cmpAInt"></b></td><td><b id="cmpSInt"></b></td></tr>
+              <tr class="diff-row">
+                <td>차이</td>
+                <td colspan="2" style="text-align:center"><span id="cmpDiff"></span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="compare-note" id="cmpNote"></div>
+        </div>
+      </section>
+
+      <!-- 4. 그래프 -->
+      <section class="rsec fade-in">
+        <h2>잔액 감소 흐름</h2>
+        <div class="chart-card">
+          <div class="chart-title">남은 빚이 줄어드는 속도</div>
+          <div class="chart-desc">두 방식으로 갚을 때 시간에 따른 총 잔액 변화입니다.</div>
+          <div class="chart-wrap"><canvas id="balanceChart"></canvas></div>
+        </div>
+      </section>
+
+      <!-- 5. 상환 순서 -->
+      <section class="rsec fade-in">
+        <h2>상환 순서</h2>
+        <div class="order" id="orderList"></div>
+      </section>
+
+      <!-- 6. 월별 스케줄 -->
+      <section class="rsec fade-in">
+        <h2>월별 상환 스케줄</h2>
+        <div class="sched-card">
+          <div class="sched-head">
+            <div class="title">매달 어떻게 줄어드는지</div>
+            <div class="desc">계산 결과 기준으로 각 대출의 매월 납입액과 남은 잔액입니다.</div>
+          </div>
+          <div class="sched-scroll"><table class="sched" id="schedTable"></table></div>
+          <button type="button" class="sched-more" id="moreBtn" onclick="showMore()" style="display:none"></button>
+          <div class="sched-footnote" id="bulletNote" style="display:none">
+            <b>만기일시 대출:</b> 매달 이자만 내다가 만기에 남은 원금을 한 번에 갚는 방식이라 마지막 달 금액이 큽니다.
+            만기 전에 잔액을 줄이면 마지막 달 상환액과 예상 이자가 달라질 수 있습니다.
+          </div>
+        </div>
+      </section>
+    </div>
+    <!-- 캡처 대상 끝 -->
+
+    <!-- 7. 추가 상환 시나리오 -->
+    <section class="rsec fade-in">
+      <h2>추가 상환 시나리오</h2>
+      <div class="scenario">
+        <div class="title">매달 얼마씩 더 갚으면 어떻게 되는지 확인해 보세요</div>
+        <div class="desc">지금 내는 금액에 <b>추가로</b> 얹는 금액입니다. 위 지표가 실시간으로 갱신됩니다.</div>
+        <div class="chip-row">
+          <button type="button" class="chip" data-amt="0" onclick="setScenario(0, this)">추가 없음</button>
+          <button type="button" class="chip" data-amt="10" onclick="setScenario(10, this)">+10만원</button>
+          <button type="button" class="chip" data-amt="20" onclick="setScenario(20, this)">+20만원</button>
+          <button type="button" class="chip" data-amt="30" onclick="setScenario(30, this)">+30만원</button>
+          <button type="button" class="chip" data-amt="50" onclick="setScenario(50, this)">+50만원</button>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="scenarioSlider" min="0" max="100" step="5" value="0">
+          <div class="slider-label">
+            <span>0만원</span>
+            <span>매달 추가: <b id="scenarioAmt">0</b>만원</span>
+            <span>100만원</span>
+          </div>
+        </div>
+        <div class="scenario-result" id="scenarioResult"></div>
+      </div>
+    </section>
+
+    <!-- 8. 관련 가이드 -->
+    <section class="rsec fade-in">
+      <h2>관련 가이드</h2>
+      <div class="guides-grid" id="guidesGrid"></div>
+    </section>
+
+    <!-- 9. 공유·저장 -->
+    <section class="rsec fade-in">
+      <h2>결과 공유</h2>
+      <div class="share-card">
+        <div class="title">이 결과를 저장하거나 공유하세요</div>
+        <div class="desc">이미지·카카오톡·텍스트 세 가지 방식으로 결과를 남길 수 있어요.</div>
+        <div class="share-row">
+          <button type="button" class="share-btn primary" onclick="saveImage()">📷 이미지로 저장</button>
+          <button type="button" class="share-btn" onclick="shareKakao()">💬 카카오톡</button>
+          <button type="button" class="share-btn" onclick="copyText(event)">📋 텍스트 복사</button>
+        </div>
+      </div>
+    </section>
+
+    <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:32px;line-height:1.6">
+      입력한 정보는 저장·전송되지 않으며 모든 계산은 브라우저 안에서 이뤄집니다.<br>
+      금리 유지·중도상환수수료 미반영 가정의 단순 시뮬레이션이며 특정 금융상품 추천이 아닙니다.
+    </p>
+  </section>
+
+  <!-- Guide 범용 슬롯 (IA 확정 전 — 단순 노출) -->
+  <section class="lp-guides lp-wrap">
+    <div class="lp-sec-title">함께 읽으면 좋은 가이드</div>
+    <div class="lp-sec-desc" style="margin-bottom:12px">계산 전에 참고할 만한 글입니다.</div>
+    <div class="lp-guides-grid">
+      <a class="lp-gcard" href="/guides/avalanche-vs-snowball.html">
+        <div class="t">아발란치 vs 스노우볼 — 갚는 순서는 딱 두 가지</div>
+        <div class="a">읽어보기 →</div>
+      </a>
+      <a class="lp-gcard" href="/guides/repayment-methods.html">
+        <div class="t">원리금균등 vs 원금균등 vs 만기일시</div>
+        <div class="a">읽어보기 →</div>
+      </a>
+      <a class="lp-gcard" href="/guides/prepayment-fee.html">
+        <div class="t">중도상환수수료, 3분 확인으로 안 낼 수 있다</div>
+        <div class="a">읽어보기 →</div>
+      </a>
+      <a class="lp-gcard" href="/guides/rate-cut-request.html">
+        <div class="t">금리인하요구권 — 갚기 전에 금리부터 깎기</div>
+        <div class="a">읽어보기 →</div>
+      </a>
+    </div>
+  </section>
+
+  <footer class="lp-footer">
+    <div class="lp-wrap">
+      <a href="/about.html">소개</a><a href="/guides/">상환 가이드</a><a href="/privacy.html">개인정보처리방침</a><a href="/disclaimer.html">면책조항</a><a href="/contact.html">문의</a>
+      <div style="margin-top:8px">
+        빚갚자의 계산 결과는 참고용 정보이며 특정 금융상품의 추천이나 금융 자문이 아닙니다.
+        실제 대출 조건(상환 방식, 중도상환수수료, 금리 변동 등)에 따라 결과가 달라질 수 있으니
+        중요한 결정 전에는 해당 금융기관에서 정확한 조건을 확인하세요.<br>
+        © 빚갚자 bitgapja.com
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /#landing -->
+
+<script src="/main.js?v=2"></script>
+<script>
+/* ============ Landing UI 보조 스크립트 (계산 로직 아님 — toggleTip 보완 + 목돈 접힘 UX) ============ */
+/* 1. toggleTip shim — main.js의 addLoan()이 생성하는 ? 아이콘이 호출.
+      (main.js의 addLoan이 생성하는 ? 아이콘용 — main.js 미수정 원칙에 따라 여기서 정의) */
+if (typeof toggleTip !== 'function') {
+  window.toggleTip = function (id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('open');
+  };
+}
+/* 2. 목돈 UX 보조 — 접힘 토글 + 요약 배지 + 자동 체크 (Preview 전용, 계산 로직 아님) */
+(function () {
+  var lump = document.getElementById('lump');
+  var lumpOn = document.getElementById('lumpOn');
+  var toggle = document.getElementById('lumpToggle');
+  var body = document.getElementById('lumpBody');
+  var arrow = document.getElementById('lumpArrow');
+  var summary = document.getElementById('lumpSummary');
+  if (!lump || !lumpOn || !toggle || !body) return;
+
+  function lumpVal() {
+    return parseFloat(String(lump.value).replace(/,/g, '')) || 0;
+  }
+  function fmtSummary(v) {
+    var t = v >= 10000
+      ? Math.floor(v / 10000) + '억' + (v % 10000 ? ' ' + (v % 10000).toLocaleString() + '만원' : '원')
+      : v.toLocaleString() + '만원';
+    return t + (lumpOn.checked ? ' 반영' : ' 입력됨 (미반영)');
+  }
+  function refreshSummary() {
+    var v = lumpVal();
+    var collapsed = body.style.display === 'none';
+    if (collapsed && v > 0) {
+      summary.textContent = fmtSummary(v);
+      summary.style.display = 'inline-block';
+    } else {
+      summary.style.display = 'none';
+    }
+  }
+  toggle.addEventListener('click', function () {
+    var collapsed = body.style.display === 'none';
+    body.style.display = collapsed ? 'block' : 'none';
+    arrow.textContent = collapsed ? '닫기 ▴' : '열기 ▾';
+    toggle.setAttribute('aria-expanded', collapsed ? 'true' : 'false');
+    refreshSummary();
+  });
+  lump.addEventListener('input', function () {
+    lumpOn.checked = lumpVal() > 0;
+    refreshSummary();
+  });
+  lumpOn.addEventListener('change', refreshSummary);
+})();
+</script>
+</body>
+</html>

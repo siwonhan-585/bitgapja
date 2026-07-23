@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bitgapja.com/sitemap.xml
+
+#DaumWebMasterTool:3c2a1c2000c76caccda58956417bd32a36a947589ecce7559e2c129fd757e5e8:NLkqp3sqCgF0b7m1VxgDAA==
