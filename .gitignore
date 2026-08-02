@@ -1,0 +1,12 @@
+# Claude Code 로컬 설정
+.claude/
+
+# OS 생성 파일
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# 로컬 전용 (공개 레포에 올리지 않음)
+CLAUDE.md
+auto-push.ps1
+.autopush.log
