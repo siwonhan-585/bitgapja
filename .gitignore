@@ -9,4 +9,5 @@ desktop.ini
 # 로컬 전용 (공개 레포에 올리지 않음)
 CLAUDE.md
 auto-push.ps1
+run-hidden.vbs
 .autopush.log
