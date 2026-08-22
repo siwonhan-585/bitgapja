@@ -1158,3 +1158,28 @@ table.sched td.balloon small.warn {
   #landing .lp-guides-grid { grid-template-columns: 1fr; }
   #landing .grid2 { grid-template-columns: 1fr 1fr; } /* 숫자 필드는 모바일도 2열 유지 */
 }
+
+/* ─────────────────────────────────────────────
+   가독성·카드 개선 (2026-08) — #result/:root 미포함 스코프
+   가이드 카드 깊이감 + 본문 위계·가독성 강화
+   ───────────────────────────────────────────── */
+#landing .lp-gcard,
+.gcard {
+  box-shadow: 0 1px 3px rgba(27, 42, 65, 0.045);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+#landing .lp-gcard:hover,
+.gcard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(27, 42, 65, 0.09);
+}
+
+/* 가이드 본문 — 소제목 위계 강화 + 읽기 리듬 */
+.doc h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; margin: 32px 0 12px; }
+.doc h3 { font-size: 16px; font-weight: 700; margin: 22px 0 8px; }
+.doc p, .doc li { font-size: 15.5px; line-height: 1.78; margin-bottom: 12px; }
+
+/* 가이드 표 — 헤더 쿨 톤 통일 + 줄무늬로 가독성 */
+.doc table { border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.doc th { background: #EEF2F8; color: #33415C; }
+.doc tr:nth-child(even) td { background: #F8FAFC; }
