@@ -1183,3 +1183,43 @@ table.sched td.balloon small.warn {
 .doc table { border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
 .doc th { background: #EEF2F8; color: #33415C; }
 .doc tr:nth-child(even) td { background: #F8FAFC; }
+
+/* ─────────────────────────────────────────────
+   홈 히어로 리치화 + 3분류 카테고리 카드 (2026-08)
+   #landing 스코프 · 계산기(#result) 미포함
+   ───────────────────────────────────────────── */
+#landing .lp-hero-grid {
+  display: grid; grid-template-columns: 1.08fr 0.92fr;
+  gap: 26px; align-items: center;
+}
+#landing .lp-badge {
+  display: inline-block; font-size: 12px; font-weight: 600;
+  color: #0F6E56; background: #E1F5EE;
+  padding: 5px 12px; border-radius: 20px; margin-bottom: 14px;
+}
+#landing .lp-hero-art {
+  background: #EEF2F8; border-radius: 16px; padding: 20px;
+}
+#landing .lp-hero-art svg { width: 100%; height: auto; display: block; }
+
+#landing .lp-cats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+#landing .lp-cat {
+  display: block; text-decoration: none; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(27, 42, 65, 0.045);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+#landing .lp-cat:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(27, 42, 65, 0.09); }
+#landing .lp-cat-ic { display: block; margin-bottom: 8px; line-height: 0; }
+#landing .lp-cat-t { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+#landing .lp-cat-d { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+
+@media (max-width: 720px) {
+  #landing .lp-hero-grid { grid-template-columns: 1fr; }
+  #landing .lp-hero-art { display: none; }
+}
+@media (max-width: 560px) {
+  #landing .lp-cats { grid-template-columns: 1fr; }
+}

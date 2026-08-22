@@ -62,14 +62,26 @@
 
   <!-- Hero: Calculator First — 최소 높이 -->
   <section class="lp-hero lp-wrap">
-    <div class="lp-hero-inner">
-      <div class="lp-eyebrow">부채 계산 도구</div>
-      <h1 class="lp-h1">여러 대출의 상환 순서를 비교하세요.</h1>
-      <p class="lp-sub">잔액·금리·상환 조건을 입력하면 방식별 예상 상환기간과 총이자를 계산합니다.</p>
-      <div class="lp-feats">
-        <span class="lp-feat">두 방식 이자 비교</span>
-        <span class="lp-feat">월별 상환 스케줄</span>
-        <span class="lp-feat">추가 상환 시나리오</span>
+    <div class="lp-hero-inner lp-hero-grid">
+      <div class="lp-hero-text">
+        <div class="lp-badge">무료 · 공식 자료 기반</div>
+        <h1 class="lp-h1">여러 대출, 어떤 순서로 갚아야<br>이자가 가장 적게 나올까?</h1>
+        <p class="lp-sub">잔액·금리·상환 조건을 입력하면 상환 순서와 완제 시점, 아낄 수 있는 이자를 바로 계산해 드립니다.</p>
+        <div class="lp-feats">
+          <span class="lp-feat">두 방식 이자 비교</span>
+          <span class="lp-feat">월별 상환 스케줄</span>
+          <span class="lp-feat">추가 상환 시나리오</span>
+        </div>
+      </div>
+      <div class="lp-hero-art" aria-hidden="true">
+        <svg viewBox="0 0 280 150" xmlns="http://www.w3.org/2000/svg">
+          <line x1="20" y1="120" x2="260" y2="120" stroke="#1B2A41" stroke-width="2"/>
+          <path d="M30 30 C 110 30, 120 118, 255 118" fill="none" stroke="#DC2626" stroke-width="5" stroke-linecap="round"/>
+          <path d="M150 92 C 200 108, 210 116, 255 118" fill="none" stroke="#059669" stroke-width="5" stroke-linecap="round"/>
+          <rect x="150" y="70" width="24" height="50" rx="3" fill="#1B2A41"/>
+          <rect x="182" y="88" width="24" height="32" rx="3" fill="#DC2626"/>
+          <rect x="214" y="102" width="24" height="18" rx="3" fill="#059669"/>
+        </svg>
       </div>
     </div>
   </section>
@@ -269,6 +281,29 @@
       입력한 정보는 저장·전송되지 않으며 모든 계산은 브라우저 안에서 이뤄집니다.<br>
       금리 유지·중도상환수수료 미반영 가정의 단순 시뮬레이션이며 특정 금융상품 추천이 아닙니다.
     </p>
+  </section>
+
+  <!-- 카테고리 3분류 (탐색용 — 계산 로직 아님) -->
+  <section class="lp-guides lp-wrap">
+    <div class="lp-sec-title">카테고리로 둘러보기</div>
+    <div class="lp-sec-desc" style="margin-bottom:14px">필요한 주제부터 골라 읽어보세요.</div>
+    <div class="lp-cats">
+      <a class="lp-cat" href="/guides/avalanche-vs-snowball">
+        <span class="lp-cat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B2A41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v14M8 17l-3-3M8 17l3-3"/><path d="M16 21V7M16 7l-3 3M16 7l3 3"/></svg></span>
+        <div class="lp-cat-t">갚는 순서 · 전략</div>
+        <div class="lp-cat-d">아발란치·스노볼, 목돈 상환 순서</div>
+      </a>
+      <a class="lp-cat" href="/guides/rate-cut-request">
+        <span class="lp-cat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B2A41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></span>
+        <div class="lp-cat-t">이자 아끼는 제도</div>
+        <div class="lp-cat-d">금리인하요구권·중도상환·대환</div>
+      </a>
+      <a class="lp-cat" href="/guides/policy-loans">
+        <span class="lp-cat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B2A41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
+        <div class="lp-cat-t">신용 · 정책자금</div>
+        <div class="lp-cat-d">신용점수·햇살론·채무조정</div>
+      </a>
+    </div>
   </section>
 
   <!-- Guide 범용 슬롯 (IA 확정 전 — 단순 노출) -->
