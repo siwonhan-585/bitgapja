@@ -9,6 +9,7 @@ function addLoan(preset) {
   const p = (preset && !preset.type) ? preset : {};
   const d = document.createElement('div');
   d.className = 'loan';
+  d.dataset.loanId = String(loanSeq);
   d.innerHTML = `
     <button type="button" class="rm" onclick="this.parentNode.remove()" aria-label="이 대출 삭제">×</button>
     <div class="field">
@@ -94,7 +95,7 @@ function readLoans() {
     const rate = num(el.querySelector('.lRate').value);
     const months = Math.round(num(el.querySelector('.lMonths').value));
     const method = el.querySelector('.lMethod').value;
-    if (bal > 0) out.push({ name, bal, rate, months, method });
+    if (bal > 0) out.push({ id: el.dataset.loanId, name, bal, rate, months, method });
   });
   return out;
 }
@@ -161,7 +162,7 @@ function render() {
   currentWinner = avalancheWins ? currentA : currentS;
 
   currentSchedMethods = {};
-  currentLoans.forEach(l => { currentSchedMethods[l.name] = l.method; });
+  currentLoans.forEach(l => { currentSchedMethods[l.id] = l.method; });
 
   renderSummary();
   renderKPIs(currentWinner);
@@ -308,20 +309,19 @@ function renderOrder(w) {
 // ── 6. 월별 스케줄 ────────────────────────────
 function renderSchedule() {
   const table = document.getElementById('schedTable');
-  const names = currentLoans.map(l => l.name);
   let head = '<thead><tr><th>개월</th>';
-  names.forEach(n => head += `<th>${escapeHtml(n)}</th>`);
+  currentLoans.forEach(l => head += `<th>${escapeHtml(l.name)}</th>`);
   head += '<th>합계</th></tr></thead>';
 
   let body = '<tbody>';
   currentWinner.schedule.slice(0, currentSchedShown).forEach(m => {
     body += `<tr><td class="mcol">${m.month}<small>${shortDate(m.month)}</small></td>`;
-    names.forEach(n => {
-      const r = m.rows.find(x => x.name === n);
+    currentLoans.forEach(l => {
+      const r = m.rows.find(x => x.id === l.id);
       if (r && r.pay > 0.001) {
         const justPaid = r.balAfter <= 0.001;
         if (justPaid) {
-          const isBalloon = currentSchedMethods[n] === 'bullet' && r.principal > r.interest * 3;
+          const isBalloon = currentSchedMethods[l.id] === 'bullet' && r.principal > r.interest * 3;
           if (isBalloon) {
             body += `<td class="balloon"><b>${fmtManOnly(r.pay)}</b><small>만기 일시</small></td>`;
           } else {

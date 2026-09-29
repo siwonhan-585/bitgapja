@@ -37,7 +37,7 @@ function minPaymentThisMonth(loan, plan, monthIndex) {
 
 /**
  * 시뮬레이션
- * @param loans [{name, bal, rate, months, method}]
+ * @param loans [{id, name, bal, rate, months, method}]
  * @param extra 매달 추가로 더 넣는 돈(만원)
  * @param strategy 'avalanche' | 'snowball'
  * @returns {months, totalInterest, order, schedule, trajectory}
@@ -45,7 +45,7 @@ function minPaymentThisMonth(loan, plan, monthIndex) {
 function runSimulation(loans, extra, strategy, lumpSum) {
   lumpSum = lumpSum || 0;
   const L = loans.map(l => ({
-    name: l.name, rate: l.rate, method: l.method,
+    id: l.id, name: l.name, rate: l.rate, method: l.method,
     balance: l.bal, months: l.months,
     plan: null, paidMonth: 0
   }));
@@ -78,7 +78,7 @@ function runSimulation(loans, extra, strategy, lumpSum) {
       pay = Math.min(pay, l.balance + interest);
       const principal = pay - interest;
       l.balance = Math.max(0, l.balance + interest - pay);
-      rows.push({ name: l.name, pay, interest, principal, _ref: l });
+      rows.push({ id: l.id, name: l.name, pay, interest, principal, _ref: l });
     });
 
     // 2) 여윳돈(추가금)을 전략 타겟에 집중
@@ -100,7 +100,7 @@ function runSimulation(loans, extra, strategy, lumpSum) {
       delete row._ref;
       if (l.balance <= 0.0001 && !l.paidMonth) {
         l.paidMonth = month;
-        order.push({ name: l.name, rate: l.rate, month });
+        order.push({ id: l.id, name: l.name, rate: l.rate, month });
       }
     });
 
